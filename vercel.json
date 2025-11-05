@@ -3,6 +3,7 @@
   "framework": "vite",
   "buildCommand": "npm run build",
   "devCommand": "vite",
+  "installCommand": "npm install --production=false",
   "outputDirectory": "build",
   "routes": [
     { "src": "/(.*)", "dest": "/index.html" }
