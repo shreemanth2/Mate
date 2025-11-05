@@ -1,0 +1,10 @@
+{
+  "version": 2,
+  "framework": "vite",
+  "buildCommand": "npm run build",
+  "devCommand": "vite",
+  "outputDirectory": "build",
+  "routes": [
+    { "src": "/(.*)", "dest": "/index.html" }
+  ]
+}
