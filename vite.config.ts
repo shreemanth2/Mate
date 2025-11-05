@@ -4,6 +4,8 @@
   import path from 'path';
 
   export default defineConfig({
+    // Base public path when served from GitHub Pages under a subpath (https://<user>.github.io/Mate/)
+    base: '/Mate/',
     plugins: [react()],
     resolve: {
       extensions: ['.js', '.jsx', '.ts', '.tsx', '.json'],

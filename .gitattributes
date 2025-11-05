@@ -1,0 +1,10 @@
+﻿# Force LF endings for source files (useful for cross-platform projects)
+* text=auto
+*.ts eol=lf
+*.tsx eol=lf
+*.js eol=lf
+*.jsx eol=lf
+*.css eol=lf
+*.html eol=lf
+*.json eol=lf
+*.md eol=lf
