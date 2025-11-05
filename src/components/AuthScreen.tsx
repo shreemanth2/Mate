@@ -145,9 +145,11 @@ export function AuthScreen({ onComplete }: AuthScreenProps) {
               <Input placeholder="Password" type="password" value={password} onChange={(e:any) => setPassword(e.target.value)} />
             </div>
 
-            <div className="flex justify-end mt-2">
-              <button onClick={() => { setForgotMode(true); setForgotEmail(email); }} className="text-sm text-[#DC143C] hover:underline">Forgot password?</button>
-            </div>
+            {mode === 'login' && (
+              <div className="flex justify-end mt-2">
+                <button onClick={() => { setForgotMode(true); setForgotEmail(email); }} className="text-sm text-[#DC143C] hover:underline">Forgot password?</button>
+              </div>
+            )}
 
             {mode === 'signup' && (
               <div>
@@ -211,11 +213,11 @@ export function AuthScreen({ onComplete }: AuthScreenProps) {
           <div>
             <button onClick={() => submit('google')} className="w-full py-3 rounded-lg border border-[#8B4513]/10 bg-white flex items-center justify-center gap-2">
               <LogIn size={18} />
-              <span>{loading ? (mode === 'login' ? 'Securely logging in' : 'Signing you up') : (mode === 'login' ? 'Continue with Google' : 'Sign up with Google')}</span>
+              <span>{mode === 'login' ? 'Continue with Google' : 'Sign up with Google'}</span>
             </button>
           </div>
 
-          {message && <div className="mt-4 text-center text-sm text-muted-foreground">{message}</div>}
+          {/* message display removed — status shown on buttons only */}
           {/* Invalid email popup */}
           <AlertDialog open={isInvalidEmailOpen} onOpenChange={(open:boolean) => setIsInvalidEmailOpen(open)}>
             <AlertDialogContent className="bg-white border-[#8B4513]/20">

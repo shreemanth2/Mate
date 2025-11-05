@@ -15,9 +15,11 @@ interface ProfileViewProps {
   onOpenHelp?: () => void;
   blockedUsers?: Array<{id:string,name:string,chat?: any}>;
   onUnblock?: (id: string) => void;
+  reportedUsers?: Array<{id:string,name:string,reasons:string[],notes?:string,chat?: any}>;
+  onRemoveReported?: (id: string) => void;
 }
 
-export function ProfileView({ userProfile, onRetakeSurvey, onLogout, onOpenHelp, blockedUsers = [], onUnblock }: ProfileViewProps) {
+export function ProfileView({ userProfile, onRetakeSurvey, onLogout, onOpenHelp, blockedUsers = [], onUnblock, reportedUsers = [], onRemoveReported }: ProfileViewProps) {
   const [nextRetakeAvailable, setNextRetakeAvailable] = useState<number | null>(null);
   const [isCooldownModalOpen, setIsCooldownModalOpen] = useState(false);
   const [remainingMs, setRemainingMs] = useState<number>(0);
@@ -322,21 +324,43 @@ export function ProfileView({ userProfile, onRetakeSurvey, onLogout, onOpenHelp,
                           <div className="space-y-2">
                             {/* Profile visibility removed - managed elsewhere or not needed */}
 
-                            <div>
-                              <h4 className="font-medium mb-2">Blocked users</h4>
-                              {blockedUsers.length === 0 ? (
-                                <p className="text-sm text-muted-foreground">No blocked users</p>
-                              ) : (
-                                <ul className="space-y-1">
-                                  {blockedUsers.map((b) => (
-                                    <li key={b.id} className="flex items-center justify-between">
-                                      <span>{b.name}</span>
-                                      <button className="text-sm text-red-600" onClick={() => { if (onUnblock) onUnblock(b.id); }}>Unblock</button>
-                                    </li>
-                                  ))}
-                                </ul>
-                              )}
-                            </div>
+                                            <div>
+                                              <h4 className="font-medium mb-2">Blocked users</h4>
+                                              {blockedUsers.length === 0 ? (
+                                                <p className="text-sm text-muted-foreground">No blocked users</p>
+                                              ) : (
+                                                <ul className="space-y-1">
+                                                  {blockedUsers.map((b) => (
+                                                    <li key={b.id} className="flex items-center justify-between">
+                                                      <span>{b.name}</span>
+                                                      <button className="text-sm text-red-600" onClick={() => { if (onUnblock) onUnblock(b.id); }}>Unblock</button>
+                                                    </li>
+                                                  ))}
+                                                </ul>
+                                              )}
+                                            </div>
+
+                                            <div className="mt-4">
+                                              <h4 className="font-medium mb-2">Reported users</h4>
+                                              {(!reportedUsers || reportedUsers.length === 0) ? (
+                                                <p className="text-sm text-muted-foreground">No reported users</p>
+                                              ) : (
+                                                <ul className="space-y-2">
+                                                  {reportedUsers.map((r) => (
+                                                    <li key={r.id} className="flex items-start justify-between">
+                                                      <div>
+                                                        <div className="font-medium">{r.name}</div>
+                                                        <div className="text-sm text-muted-foreground">Reasons: {r.reasons.join(', ')}</div>
+                                                        {r.notes && <div className="text-sm text-muted-foreground">Note: {r.notes}</div>}
+                                                      </div>
+                                                      <div className="flex flex-col items-end">
+                                                        <button className="text-sm text-red-600 mb-2" onClick={() => { if (onRemoveReported) onRemoveReported(r.id); }}>Remove</button>
+                                                      </div>
+                                                    </li>
+                                                  ))}
+                                                </ul>
+                                              )}
+                                            </div>
                           </div>
                         </div>
                       </div>

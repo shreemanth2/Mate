@@ -21,6 +21,7 @@ export default function App() {
   const [chats, setChats] = useState<any[]>(mockChats);
   const [userProfile, setUserProfile] = useState<any>(null);
   const [blockedUsers, setBlockedUsers] = useState<Array<{id:string,name:string,chat?: any}>>([]);
+  const [reportedUsers, setReportedUsers] = useState<Array<{id:string,name:string,reasons:string[],notes?:string, chat?: any}>>([]);
   const [assignedVibes, setAssignedVibes] = useState<Record<string, {emoji:string, name:string}>>({});
   const [showHelp, setShowHelp] = useState(false);
 
@@ -92,6 +93,17 @@ export default function App() {
     setBlockedUsers((prev) => prev.find((b) => b.id === id) ? prev : [...prev, { id, name: label, chat: chatToStore }]);
     // Also remove from chats
     removeChat(id);
+  };
+
+  const addReportedUser = (id: string, name?: string, reasons: string[] = [], notes?: string, chat?: any) => {
+    const label = name || id;
+    setReportedUsers((prev) => prev.find((r) => r.id === id) ? prev : [...prev, { id, name: label, reasons, notes, chat }]);
+    // Also block the user when reported
+    addBlockedUser(id, name, chat);
+  };
+
+  const removeReportedUser = (id: string) => {
+    setReportedUsers((prev) => prev.filter(r => r.id !== id));
   };
 
   const removeBlockedUser = (idOrName: string) => {
@@ -242,7 +254,7 @@ export default function App() {
         {/* Main content */}
         <div className="flex-1 overflow-hidden">
           {activeChatId ? (
-            <ChatView chatId={activeChatId} chat={activeChat} onBack={handleBackToChats} onUnmatch={(id: string) => removeChat(id)} onDeleteConversation={(id: string) => deleteConversation(id)} onSendMessage={(id: string, text: string) => handleSendMessage(id, text)} onBlock={(id: string, name?: string) => addBlockedUser(id, name)} />
+            <ChatView chatId={activeChatId} chat={activeChat} onBack={handleBackToChats} onUnmatch={(id: string) => removeChat(id)} onDeleteConversation={(id: string) => deleteConversation(id)} onSendMessage={(id: string, text: string) => handleSendMessage(id, text)} onBlock={(id: string, name?: string) => addBlockedUser(id, name)} onReport={(id,name,reasons,notes,chat) => addReportedUser(id,name,reasons,notes,chat)} />
           ) : (
             <>
               {activeTab === 'discover' && <DiscoverView userProfile={userProfile} onOpenChat={handleOpenChat} onMatch={handleMatch} assignedVibes={assignedVibes} onAssignVibe={(id, vibe) => setAssignedVibes({...assignedVibes, [id]: vibe})} />}
@@ -256,6 +268,8 @@ export default function App() {
                   onOpenHelp={() => setShowHelp(true)}
                   blockedUsers={blockedUsers}
                   onUnblock={(name: string) => removeBlockedUser(name)}
+                  reportedUsers={reportedUsers}
+                  onRemoveReported={(id: string) => removeReportedUser(id)}
                 />
               )}
               {showHelp && <HelpSupport onBack={() => setShowHelp(false)} />}
